@@ -631,6 +631,9 @@ static struct regression_test_case regression_test_cases[] = {
 	{ MUA, 0, "(?P<Name>a)?(?P<Name2>b)?(?(Name)c|d)+?dd", "bcabcacdb bdddd" },
 	{ MUA, 0, "(?P<Name>a)?(?P<Name2>b)?(?(Name)c|d)+l", "ababccddabdbccd abcccl" },
 	{ MUA, 0, "((?:a|aa)(?(1)aaa))x", "aax" },
+	{ MUA, 0, "(?(?!)a|b)", "ab" },
+	{ MUA, 0, "(?(?!)a)", "ab" },
+	{ MUA, 0 | F_NOMATCH, "(?(?!)a|b)", "ac" },
 
 	/* Set start of match. */
 	{ MUA, 0, "(?:\\Ka)*aaaab", "aaaaaaaa aaaaaaabb" },
@@ -949,7 +952,7 @@ static void setstack16(pcre16_extra *extra)
 
 	pcre16_assign_jit_stack(extra, callback16, getstack16());
 }
-#endif /* SUPPORT_PCRE8 */
+#endif /* SUPPORT_PCRE16 */
 
 #ifdef SUPPORT_PCRE32
 static pcre32_jit_stack *stack32;
@@ -972,7 +975,7 @@ static void setstack32(pcre32_extra *extra)
 
 	pcre32_assign_jit_stack(extra, callback32, getstack32());
 }
-#endif /* SUPPORT_PCRE8 */
+#endif /* SUPPORT_PCRE32 */
 
 #ifdef SUPPORT_PCRE16
 
@@ -1182,7 +1185,7 @@ static int regression_tests(void)
 #elif defined SUPPORT_PCRE16
 	pcre16_config(PCRE_CONFIG_UTF16, &utf);
 	pcre16_config(PCRE_CONFIG_UNICODE_PROPERTIES, &ucp);
-#elif defined SUPPORT_PCRE16
+#elif defined SUPPORT_PCRE32
 	pcre32_config(PCRE_CONFIG_UTF32, &utf);
 	pcre32_config(PCRE_CONFIG_UNICODE_PROPERTIES, &ucp);
 #endif
